@@ -7,7 +7,7 @@ import {
   IconNotification,
   IconUserCircle,
 } from "@tabler/icons-react"
-
+import { ModeToggle } from "./theme-switch"
 import {
   Avatar,
   AvatarFallback,
@@ -28,22 +28,20 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { authClient } from "@/lib/auth-client";
 
 export function NavUser({
   user,
-}: {
-  user: {
-    name: string
-    email: string
-    image: string
-  }
-}) {
+}:any) {
   const { isMobile } = useSidebar()
-
+  
+  if (!user) return null
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <DropdownMenu>
+        <DropdownMenu>            
+          <ModeToggle />
+
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
@@ -56,7 +54,7 @@ export function NavUser({
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
                 <span className="text-muted-foreground truncate text-xs">
-                  {user.email}
+                  {"Pôle "+user.pole}
                 </span>
               </div>
               <IconDotsVertical className="ml-auto size-4" />
@@ -77,7 +75,7 @@ export function NavUser({
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
                   <span className="text-muted-foreground truncate text-xs">
-                    {user.email}
+                    {"Pôle "+user.pole}
                   </span>
                 </div>
               </div>

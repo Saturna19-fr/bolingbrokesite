@@ -1,8 +1,10 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/db/drizzle"; // your drizzle instance
+import { eq } from "drizzle-orm";
 import { schema } from "@/db/schema";
 import { nextCookies } from "better-auth/next-js";
+import { customSession } from "better-auth/plugins";
 
 export const auth = betterAuth({
     emailAndPassword: {
@@ -12,5 +14,16 @@ export const auth = betterAuth({
         provider: "pg", // or "mysql", "sqlite"
         schema: schema,
     }),
-    plugins: [nextCookies()]
+    plugins: [nextCookies(),
+        customSession(async ({user, session}) =>{
+            const pole = await db.select({pole: schema.user.pole}).from(schema.user).where(eq(schema.user.email, user.email));
+            return {
+                user: {
+                    ...user,
+                    pole: pole[0]?.pole ?? null
+                },
+                session
+            }
+        })
+    ]
 });

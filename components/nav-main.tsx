@@ -28,7 +28,7 @@ export function NavMain({
             <SidebarMenuButton
               tooltip="Nouveau membre"
               className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear"
-              onClick={() => console.log('Nouveau membre clicked')}
+              onClick={() => location.href = "/membres/nouveau"}
             >
               <IconCirclePlusFilled />
               <span>Nouveau membre</span>
@@ -44,14 +44,16 @@ export function NavMain({
           </SidebarMenuItem>
         </SidebarMenu>
         <SidebarMenu>
-          {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title}>
-                {item.icon && <item.icon />}
-                <span>{item.title}</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+        {items.map((item) => (
+          <SidebarMenuItem key={item.title}>
+            <SidebarMenuButton asChild>
+              <a href={item.url}>
+              {item.icon && <item.icon />}
+              <span>{item.title}</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        ))}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>

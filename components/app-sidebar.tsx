@@ -18,7 +18,10 @@ import {
   IconSettings,
   IconUsers,
 } from "@tabler/icons-react"
-
+import Router from "next/router"
+import { createAuthClient } from "better-auth/client"
+import { authClient } from "@/lib/auth-client";
+import { useEffect } from "react"
 import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
@@ -38,16 +41,17 @@ const data = {
     name: "shadcn",
     email: "m@example.com",
     image: "/avatars/shadcn.jpg",
+    pole: "Sécuritaire"
   },
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: IconDashboard,
     },
     {
       title: "Lifecycle",
-      url: "#",
+      url: "/404",
       icon: IconListDetails,
     },
     {
@@ -151,6 +155,13 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const router = Router;
+  const { data: session, isPending } = authClient.useSession();
+	useEffect(() => {
+		if (!session && !isPending) {
+			router.push("/");
+		}
+	}, [session, isPending]);
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -174,7 +185,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={session?.user} />
       </SidebarFooter>
     </Sidebar>
   )
