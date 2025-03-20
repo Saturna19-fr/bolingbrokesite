@@ -18,6 +18,7 @@ import {
   IconSettings,
   IconUsers,
 } from "@tabler/icons-react"
+import { useRouter } from "next/navigation"
 import Router from "next/router"
 import { createAuthClient } from "better-auth/client"
 import { authClient } from "@/lib/auth-client";
@@ -155,7 +156,7 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const router = Router;
+  const router = useRouter()
   const { data: session, isPending } = authClient.useSession();
 	useEffect(() => {
 		if (!session && !isPending) {
