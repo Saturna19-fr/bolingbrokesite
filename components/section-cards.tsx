@@ -17,7 +17,12 @@ const getMembersCount = async () => {
   const data_medical = (await db.select().from(user).where(eq(user.pole, "Médical"))).length;
   return {"medical":data_medical,"securitaire":data};
 };
+const getGlobalMemberCount = async () => {
+  const data = (await db.select().from(user)).length;
+  return data;
+};
 
+const members_cached = getMembersCount();
 export function SectionCards() {
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
@@ -25,7 +30,7 @@ export function SectionCards() {
         <CardHeader>
           <CardDescription>Stats Personnel</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {getMembersCount().then((data) => data.securitaire)}
+            {members_cached.then((data) => data.securitaire)}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -47,7 +52,7 @@ export function SectionCards() {
         <CardHeader>
           <CardDescription>Stats Personnel</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-          {getMembersCount().then((data) => data.medical)}
+          {members_cached.then((data) => data.medical)}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -69,7 +74,7 @@ export function SectionCards() {
         <CardHeader>
           <CardDescription>Comptes enregistrés</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {getMembersCount().then((data) => data.medical + data.securitaire)}
+            {getGlobalMemberCount().then((data) => data)}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">

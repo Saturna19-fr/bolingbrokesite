@@ -21,22 +21,13 @@ export const metadata: Metadata = {
   description: "Outil de gestion de Bolingbroke permettant de faire des rapports, des suivis des agents et des formations.",
 };
 
-export default function RootLayout({
+export default function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          ><SidebarProvider
+        <SidebarProvider
           style={
             {
               "--sidebar-width": "calc(var(--spacing) * 72)",
@@ -51,9 +42,6 @@ export default function RootLayout({
             {children}
           </SidebarInset>
         </SidebarProvider>
-        </ThemeProvider>
-      </body>
-    </html>
   );
 }
 

@@ -2,7 +2,7 @@
 
 import {auth} from "@/lib/auth";
 
-export const signIn = async () => {
+export const signIn = async (email:string, password:string) => {
     await auth.api.signInEmail({
         body: {
             email: "test@saturna19.dev",
@@ -16,7 +16,17 @@ export const signUp = async () => {
         body: {
             name: "Maxence JONES",
             email: "test@saturna19.dev", // complete the email field
-            password: "password" // add password field
+            password: "password", // add password field
+            pole: "Sécuriaire", // add pole field
         }
     })
 }
+
+// export const giveAdmin = async () => {
+//     const updatedUser = await auth.api.setRole({
+//         body: {
+//             userId: "81fH7KkfeurZXvxLrIzEAbZDcglvIQTr",
+//             role: "admin",
+//           }
+//     });
+// };

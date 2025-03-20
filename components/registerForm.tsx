@@ -29,7 +29,7 @@ const fieldLabels = [
   "RIB",
   "Matricule"
 ]
-export function LoginForm({
+export function RegisterForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {

@@ -96,7 +96,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => authClient.signOut()}>
               <IconLogout />
               Log out
             </DropdownMenuItem>

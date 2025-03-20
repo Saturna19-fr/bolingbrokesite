@@ -10,6 +10,9 @@ export const user = pgTable("user", {
 	updatedAt: timestamp('updated_at').notNull(),
 	role: text('role'),
 	pole: text('pole'),
+	job: text('job'),
+	rib: text('rib'),
+	phone: text('phone'),
 	banned: boolean('banned'),
 	banReason: text('ban_reason'),
 	banExpires: timestamp('ban_expires')
