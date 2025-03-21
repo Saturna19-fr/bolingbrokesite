@@ -18,7 +18,7 @@ export default async function Home() {
         <>
         <LoginForm />
         
-        <Button onClick={signUp}>Sign Up</Button>
+        {/* <Button onClick={signUp}>Sign Up</Button> */}
         </>
       )}
       {session && (
