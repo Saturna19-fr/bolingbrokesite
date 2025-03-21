@@ -22,12 +22,14 @@ import {
   IconChevronsLeft,
   IconChevronsRight,
   IconCircleCheckFilled,
+  IconCrown,
   IconDotsVertical,
   IconGripVertical,
   IconLayoutColumns,
   IconLoader,
   IconPlus,
   IconShield,
+  IconShieldBolt,
   IconShieldCode,
   IconStarFilled,
   IconTrendingUp,
@@ -107,16 +109,17 @@ const FORMATIONS = [
 ]
 
 const IconsPerGrade = {
-  "Direction": <IconStarFilled className="fill-yellow-500 dark:fill-yellow-400" />,
-  "Etat-Major": <IconShield className="fill-blue-500 dark:fill-blue-400" />,
-  "Capitaine": <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />,
-  "Lieutenant": <IconLoader />,
-  "Sergent Chef" : <IconLoader />,
-  "Sergent": <IconLoader />,
-  "OSS GS-8": <IconLoader />,
-  "GS-7": <IconLoader />,
-  "GS-6": <IconLoader />,
-  "GS-5": <IconLoader />,
+  "Direction": <IconCrown className="fill-yellow-500 dark:fill-yellow-400" />,
+  "Administration": <IconStarFilled className="fill-yellow-500 dark:fill-yellow-400" />,
+  "Etat-Major": <IconShield className="fill-yellow-500 dark:fill-yellow-400" />,
+  "Capitaine": <IconShield className="fill-blue-500 dark:fill-blue-400" />,
+  "Lieutenant": <IconShield className="fill-green-500 dark:fill-green-400" />,
+  "Sergent Chef" : <></>,
+  "Sergent": <></>,
+  "GS-8 OSS": <></>,
+  "GS-7": <></>,
+  "GS-6": <></>,
+  "GS-5": <></>,
 }
 
 export const schema = z.object({
