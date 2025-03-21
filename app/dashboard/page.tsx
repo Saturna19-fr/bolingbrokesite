@@ -12,27 +12,11 @@ import data from "./data.json"
 import { schema } from "@/db/schema"
 import { db } from "@/db/drizzle"
 import { eq } from "drizzle-orm"
+import { fetchUserProfilesWithFormations } from "@/server/userProfile"
 
 
 export default async function Page() {
-  let userProfiles = await db.select({id: schema.user.id, name: schema.user.name, matricule: schema.user.globalid, grade: schema.user.job, user_internal_id: schema.user.id, pole: schema.user.pole}).from(schema.user)
-  
-  const userProfilesWithFormations = await Promise.all(
-    userProfiles.map(async (user) => {
-      const formations = user.matricule !== null 
-        ? (await db.select({formationName: schema.formations.formationName}).from(schema.formations).where(eq(schema.formations.userId, user.matricule))).map(f => f.formationName)
-        : [];
-      return { ...user, formations };
-    })
-  );
-
-  const safeUserProfiles = userProfilesWithFormations.map(user => ({
-    ...user,
-    id: Number(user.id), // conversion string → number
-    grade: user.grade ?? '', // fallback si null
-    pole: user.pole ?? '',   // fallback si null
-  }))
-  
+  const safeUserProfiles = await fetchUserProfilesWithFormations();
   // console.log(userProfilesWithFormations);
   console.log(safeUserProfiles);
   return (
