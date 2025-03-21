@@ -100,7 +100,7 @@ export const schema = z.object({
   id: z.number(),
   pole: z.string(),
   name: z.string(),
-  matricule: z.string(),
+  matricule: z.number(),
   grade: z.string(),
   formations: z.array(z.string()),
   user_internal_id: z.string(),
@@ -210,7 +210,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
 
       const handleFormationToggle = async (formation: string, isChecked: boolean) => {
         try {
-          await toggleFormation({ userId: row.original.id.toString(), formation, isChecked });
+          await toggleFormation({ userId: row.original.matricule.toString(), formation, isChecked });
           setSelectedFormations((prev) =>
         isChecked ? [...prev, formation] : prev.filter((f) => f !== formation)
           );
@@ -223,7 +223,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
       return (
         <Select>
           <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Voir formations" />
+        <SelectValue placeholder={selectedFormations.length} />
           </SelectTrigger>
           <SelectContent>
         {FORMATIONS.map((formation) => (
@@ -362,16 +362,16 @@ export function DataTable({
             <SelectItem value="focus-documents">Focus Documents</SelectItem>
           </SelectContent>
         </Select>
-        <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
-          <TabsTrigger value="outline">Outline</TabsTrigger>
-          <TabsTrigger value="past-performance">
+        {/* <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex"> */}
+          {/* <TabsTrigger value="outline">Outline</TabsTrigger> */}
+          {/* <TabsTrigger value="past-performance">
             Past Performance <Badge variant="secondary">3</Badge>
           </TabsTrigger>
           <TabsTrigger value="key-personnel">
             Key Personnel <Badge variant="secondary">2</Badge>
           </TabsTrigger>
-          <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger>
-        </TabsList>
+          <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger> */}
+        {/* </TabsList> */}
         <div className="flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
