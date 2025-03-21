@@ -9,8 +9,20 @@ import {
 } from "@/components/ui/sidebar"
 
 import data from "./data.json"
+import { schema } from "@/db/schema"
+import { db } from "@/db/drizzle"
+// A FINIR !!!!
+export default async function Page() {
+  let userProfiles = await db.select({id: schema.user.id, name: schema.user.name, matricule: schema.user.globalid, grade: schema.user.job, user_internal_id: schema.user.id, pole: schema.user.pole}).from(schema.user)
+  const userProfilesWithFormations = await Promise.all(
+    userProfiles.map(async (user) => {
+      const formations = await db.select({formationName: schema.formations.formationName}).from(schema.formations);
+      return { ...user, formations };
+    })
+  );
 
-export default function Page() {
+  console.log(userProfilesWithFormations);
+
   return (
     
         <div className="flex flex-1 flex-col">
@@ -20,6 +32,9 @@ export default function Page() {
               <div className="px-4 lg:px-6">
                 {/* <ChartAreaInteractive /> */}
               </div>
+              <p>
+                {JSON.stringify(userProfiles)}
+              </p>
               <DataTable data={data} />
             </div>
           </div>

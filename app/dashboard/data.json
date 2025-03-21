@@ -4,6 +4,7 @@
     "name": "Maxence JONES",
     "matricule": "79",
     "grade": "Capitaine",
+    "pole": "Sécuritaire",
     "formations": [
       "Secourisme",
       "PPA 2"
@@ -18,6 +19,7 @@
     "formations": [
       "PPA 1"
     ],
-    "user_internal_id": "_2__"
+    "user_internal_id": "_2__",
+    "pole": "Médical"
   }
 ]

@@ -98,6 +98,7 @@ const FORMATIONS = [
 
 export const schema = z.object({
   id: z.number(),
+  pole: z.string(),
   name: z.string(),
   matricule: z.string(),
   grade: z.string(),
