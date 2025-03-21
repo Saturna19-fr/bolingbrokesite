@@ -1,4 +1,4 @@
-import { pgTable, text, integer, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, integer, timestamp, boolean, json } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
 	id: text("id").primaryKey(),
@@ -15,7 +15,8 @@ export const user = pgTable("user", {
 	phone: text('phone'),
 	banned: boolean('banned'),
 	banReason: text('ban_reason'),
-	banExpires: timestamp('ban_expires')
+	banExpires: timestamp('ban_expires'),
+	globalid: integer('globalid').generatedByDefaultAsIdentity().unique(),
 });
 
 export const session = pgTable("session", {
@@ -55,4 +56,10 @@ export const verification = pgTable("verification", {
 	updatedAt: timestamp('updated_at')
 });
 
-export const schema = {user, session, account, verification};
+export const formations = pgTable("formations", {
+	id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+	userId: integer("user_id").notNull().references(() => user.globalid, { onDelete: 'cascade' }),
+	formationName: text("formation_name").notNull(),
+});
+
+export const schema = {user, session, account, verification, formations};

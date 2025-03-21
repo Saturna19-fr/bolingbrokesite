@@ -30,7 +30,7 @@ export const auth = betterAuth({
         } as const
     ),nextCookies(),
         customSession(async ({user, session}) =>{
-            const pole = await db.select({pole: schema.user.pole, job: schema.user.job, rib: schema.user.rib, phone: schema.user.phone}).from(schema.user).where(eq(schema.user.email, user.email));
+            const pole = await db.select({pole: schema.user.pole, job: schema.user.job, globalid: schema.user.globalid, rib: schema.user.rib, phone: schema.user.phone}).from(schema.user).where(eq(schema.user.email, user.email));
             return {
                 user: {
                     ...user,
@@ -38,6 +38,7 @@ export const auth = betterAuth({
 	                job: pole[0]?.job ?? null,
 	                rib: pole[0]?.rib ?? null,
 	                phone: pole[0]?.phone ?? null,
+                    globalid: pole[0]?.globalid ?? null,
                     
                 },
                 session

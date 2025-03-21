@@ -21,7 +21,7 @@ export default async function Home() {
         <Welcome />
       )}
       {/* <Button onClick={signIn}>Sign In</Button> */}
-      {/* <Button onClick={signUp}>Sign Up</Button> */}
+      <Button onClick={signUp}>Sign Up</Button>
       {/* <Button onClick={giveAdmin}>Give Admin</Button> */}
       {/*<p>
       {!session ? "Not authenticated" : session.user.email}
