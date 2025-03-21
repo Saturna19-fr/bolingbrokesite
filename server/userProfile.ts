@@ -26,9 +26,10 @@ export async function fetchUserProfilesWithFormations() {
   
     const safeUserProfiles = userProfilesWithFormations.map(user => ({
       ...user,
-      id: Number(user.id),
+      id: user.id ?? '',
       grade: user.grade ?? '',
       pole: user.pole ?? '',
+      user_internal_id: Number(user.user_internal_id) ?? '',
     }));
   
     return safeUserProfiles;

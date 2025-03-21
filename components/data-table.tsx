@@ -120,13 +120,13 @@ const IconsPerGrade = {
 }
 
 export const schema = z.object({
-  id: z.number(),
+  id: z.string(),
   pole: z.string(),
   name: z.string(),
   matricule: z.number(),
   grade: z.string(),
   formations: z.array(z.string()),
-  user_internal_id: z.string(),
+  user_internal_id: z.number(),
 })
 
 // Create a separate component for the drag handle
@@ -153,7 +153,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     id: "drag",
     header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.id} />,
+    cell: ({ row }) => <DragHandle id={row.original.user_internal_id} />,
   },
   {
     id: "select",
