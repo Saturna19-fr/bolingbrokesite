@@ -24,10 +24,10 @@ export const direction = ac.newRole({
 
 export const formateur = ac.newRole({
     ...userAc.statements, 
-    project: ["readformation", "assignformation"],
+    project: ["readformation", "assignformation", "removeformation"],
 });
 
 export const sergent = ac.newRole({
     ...userAc.statements, 
-    project: ["readformation", "assignformation", "newmember", "changerank"],
+    project: ["readformation", "assignformation","removeformation", "newmember"],
 });

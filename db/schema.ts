@@ -1,4 +1,4 @@
-import { pgTable, text, integer, timestamp, boolean, json } from "drizzle-orm/pg-core";
+import { pgTable, text, integer, timestamp, boolean, json, uniqueIndex } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
 	id: text("id").primaryKey(),
@@ -16,7 +16,7 @@ export const user = pgTable("user", {
 	banned: boolean('banned'),
 	banReason: text('ban_reason'),
 	banExpires: timestamp('ban_expires'),
-	globalid: integer('globalid').unique(),
+	globalid: integer('globalid').notNull().unique(), // Added unique constraint
 });
 
 export const session = pgTable("session", {

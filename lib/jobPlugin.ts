@@ -10,6 +10,18 @@ export const jobPlugin = ()=>{
                     pole: {
                         type: "string",
                     },
+                    job: {
+                        type: "string",
+                    },
+                    rib: {
+                        type: "string",
+                    },
+                    phone: {
+                        type: "string",
+                    },
+                    globalid: {
+                        type: "number",
+                    },
                 },
             },
         },

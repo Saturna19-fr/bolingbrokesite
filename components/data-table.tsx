@@ -27,6 +27,9 @@ import {
   IconLayoutColumns,
   IconLoader,
   IconPlus,
+  IconShield,
+  IconShieldCode,
+  IconStarFilled,
   IconTrendingUp,
 } from "@tabler/icons-react"
 import {
@@ -84,17 +87,37 @@ import { Loader, Upload } from "lucide-react"
 import { toast } from "sonner"
 // List of fake formations
 const FORMATIONS = [
-  "Secourisme",
-  "Incendie",
-  "Sauvetage",
-  "Conduite",
-  "Tactique",
-  "Communication",
-  "Leadership",
-  "Premiers soins",
-  "Intervention chimique",
-  "Sauvetage en hauteur",
+  "Contrat signé",
+  "Formation d'introduction",
+  "Examen Théorique",
+  "PPA EMS",
+  "Examen Port d'Arme",
+  "Véhicules P/S",
+  "Formation Finale",
+  "Convoi",
+  "PPA 2",
+  "Véhicules spéciaux",
+  "Henri (P)",
+  "Henri (CP)",
+  "Henri (A)",
+  "PPA 3",
+  "PPA Spécialisé",
+  "PPA 4",
+  "Accès Formateur",
 ]
+
+const IconsPerGrade = {
+  "Direction": <IconStarFilled className="fill-yellow-500 dark:fill-yellow-400" />,
+  "Etat-Major": <IconShield className="fill-blue-500 dark:fill-blue-400" />,
+  "Capitaine": <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />,
+  "Lieutenant": <IconLoader />,
+  "Sergent Chef" : <IconLoader />,
+  "Sergent": <IconLoader />,
+  "OSS GS-8": <IconLoader />,
+  "GS-7": <IconLoader />,
+  "GS-6": <IconLoader />,
+  "GS-5": <IconLoader />,
+}
 
 export const schema = z.object({
   id: z.number(),
@@ -179,11 +202,14 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: "Rank",
     cell: ({ row }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
-        {row.original.grade === "Capitaine" ? (
+
+        {IconsPerGrade[row.original.grade as keyof typeof IconsPerGrade]}
+
+        {/* {row.original.grade === "Capitaine" ? (
           <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
         ) : (
           <IconLoader />
-        )}
+        )} */}
         {row.original.grade}
       </Badge>
         ),
@@ -400,10 +426,10 @@ export function DataTable({
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant="outline" size="sm">
+          {/* <Button variant="outline" size="sm">
             <IconPlus />
             <span className="hidden lg:inline">Add Section</span>
-          </Button>
+          </Button> */}
           <Button variant="outline" size="sm" onClick={() => table.reset()}>
             <Loader />
             <span className="hidden lg:inline">Actualiser</span>
@@ -455,13 +481,12 @@ export function DataTable({
         </div>
         <div className="flex items-center justify-between px-4">
           <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
-            {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s)
-            selected.
+            {table.getFilteredSelectedRowModel().rows.length} sur {table.getFilteredRowModel().rows.length} lignes sélectionnées.
           </div>
           <div className="flex w-full items-center gap-8 lg:w-fit">
             <div className="hidden items-center gap-2 lg:flex">
               <Label htmlFor="rows-per-page" className="text-sm font-medium">
-                Rows per page
+                Lignes par page
               </Label>
               <Select
                 value={`${table.getState().pagination.pageSize}`}

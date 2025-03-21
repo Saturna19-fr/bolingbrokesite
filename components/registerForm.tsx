@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectTrigger, SelectValue, SelectItem } from "@/components/ui/select"
 import { authClient } from "@/lib/auth-client";
+import { sendDiscordMessage } from "@/server/logger";
 
 const securityRanks = [
   "GS-5",
@@ -17,6 +18,7 @@ const securityRanks = [
   "GS-8 OSS",
   "Lieutenant",
   "Capitaine",
+  "Etat-Major",
   "Administrateur",
   "Direction",
 ]
@@ -24,15 +26,19 @@ const medicalRanks = ["Médecin Recrue", "Médecin", "Médecin Expérimenté", "
 const pole = ["Sécuritaire", "Médical"]
 const fieldLabels = [
   "Prénom et Nom",
-  "Date de naissance",
   "Numéro de téléphone",
   "RIB",
   "Matricule"
 ]
+
+
 export function RegisterForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  
+  const { data: session, isPending } = authClient.useSession();
+  
   const [branch, setBranch] = useState<string>("")
   const [newAccData, setNewAccData] = useState<any>({})
   const getRanksForBranch = () => {
@@ -43,10 +49,10 @@ export function RegisterForm({
     }
     return []
   }
-
+  
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
     
+    e.preventDefault();
     // Capture the form element immediately
     const form = e.currentTarget;
     
@@ -55,7 +61,7 @@ export function RegisterForm({
     
     // Log the form data entries to see what's being submitted
     console.log(Object.fromEntries(formData.entries()));
-
+    
     const newUser = await authClient.admin.createUser({
       name: formData.get("prenom_et_nom") as string,
       email: formData.get("email") as string,
@@ -64,12 +70,19 @@ export function RegisterForm({
       // pole: branch,
       data: {
         // any additional on the user table including plugin fields and custom fields
+        phone: formData.get("numéro_de_téléphone") as string,
         pole: branch,
+        job: formData.get("job") as string,
+        rib: formData.get("rib") as string,
+        matricule: formData.get("matricule") as string,
+        globalid: formData.get("matricule") ? Number(formData.get("matricule")) : null,
       },
     })
 
     console.log(newUser)
     setNewAccData(newUser)
+    await sendDiscordMessage("New acc created: " + JSON.stringify(newUser)+ " by "+session?.user?.name+" ("+session?.user?.email+")")
+
   }
 
   return (
@@ -100,7 +113,7 @@ export function RegisterForm({
                   <Input
                     id={`field-${index}`}
                     name={fieldName}
-                    type={label === "Date de naissance" ? "date" : "text"}
+                    type="text"
                     placeholder={`Entrez votre ${label.toLowerCase()}`}
                   />
                 </div>

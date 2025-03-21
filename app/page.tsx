@@ -15,13 +15,16 @@ export default async function Home() {
   return (
     <main className="flex flex-col items-center justify-center min-h-screen py-2">
       {!session && (
+        <>
         <LoginForm />
+        
+        <Button onClick={signUp}>Sign Up</Button>
+        </>
       )}
       {session && (
         <Welcome />
       )}
       {/* <Button onClick={signIn}>Sign In</Button> */}
-      <Button onClick={signUp}>Sign Up</Button>
       {/* <Button onClick={giveAdmin}>Give Admin</Button> */}
       {/*<p>
       {!session ? "Not authenticated" : session.user.email}

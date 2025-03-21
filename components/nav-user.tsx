@@ -3,8 +3,10 @@
 import {
   IconCreditCard,
   IconDotsVertical,
+  IconHammer,
   IconLogout,
   IconNotification,
+  IconPremiumRights,
   IconUserCircle,
 } from "@tabler/icons-react"
 import { ModeToggle } from "./theme-switch"
@@ -84,15 +86,11 @@ export function NavUser({
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <IconUserCircle />
-                Account
+                {"Grade: "+user.job} 
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <IconCreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconNotification />
-                Notifications
+                <IconHammer />
+                {"Groupe d'utilisateur: "+user.role}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

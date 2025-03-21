@@ -18,6 +18,7 @@ export const signUp = async () => {
             email: "test@saturna19.dev", // complete the email field
             password: "password", // add password field
             pole: "Sécuriaire", // add pole field
+            globalid: 79
         }
     })
 }
