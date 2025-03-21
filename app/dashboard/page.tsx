@@ -34,7 +34,7 @@ export default async function Page() {
   }))
   
   // console.log(userProfilesWithFormations);
-
+  console.log(safeUserProfiles);
   return (
     
         <div className="flex flex-1 flex-col">
