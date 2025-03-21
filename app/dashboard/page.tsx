@@ -26,6 +26,13 @@ export default async function Page() {
     })
   );
 
+  const safeUserProfiles = userProfilesWithFormations.map(user => ({
+    ...user,
+    id: Number(user.id), // conversion string → number
+    grade: user.grade ?? '', // fallback si null
+    pole: user.pole ?? '',   // fallback si null
+  }))
+  
   // console.log(userProfilesWithFormations);
 
   return (
@@ -38,7 +45,7 @@ export default async function Page() {
                 {/* <ChartAreaInteractive /> */}
               </div>
 
-              <DataTable data={userProfilesWithFormations} />
+              <DataTable data={safeUserProfiles} />
             </div>
           </div>
         </div>
