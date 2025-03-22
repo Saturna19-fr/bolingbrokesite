@@ -433,7 +433,7 @@ export function DataTable({
             <IconPlus />
             <span className="hidden lg:inline">Add Section</span>
           </Button> */}
-          <Button variant="outline" size="sm" onClick={() => table.reset()}>
+          <Button variant="outline" size="sm" onClick={() => window.location.reload()}>
             <Loader />
             <span className="hidden lg:inline">Actualiser</span>
           </Button>
@@ -639,7 +639,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
                     <Checkbox
                       id={`drawer-${item.id}-${formation}`}
                       checked={selectedFormations.includes(formation)}
-                      onCheckedChange={(checked) => handleFormationChange(formation, checked === true)}
+                      disabled
                     />
                     <Label htmlFor={`drawer-${item.id}-${formation}`} className="text-sm cursor-pointer">
                       {formation}
