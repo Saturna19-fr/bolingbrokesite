@@ -29,7 +29,6 @@ export async function fetchUserProfilesWithFormations() {
       id: user.id ?? '',
       grade: user.grade ?? '',
       pole: user.pole ?? '',
-      user_internal_id: Number(user.user_internal_id) ?? '',
     }));
   
     return safeUserProfiles;

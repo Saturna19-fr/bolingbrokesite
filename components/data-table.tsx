@@ -87,7 +87,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { authClient } from "@/lib/auth-client"
 import { Loader, Upload } from "lucide-react"
 import { toast } from "sonner"
-import { auth } from "@/lib/auth"
+
 // List of fake formations
 const FORMATIONS = [
   "Contrat signé",
@@ -130,7 +130,6 @@ export const schema = z.object({
   matricule: z.number(),
   grade: z.string(),
   formations: z.array(z.string()),
-  user_internal_id: z.number(),
 })
 
 // Create a separate component for the drag handle
@@ -157,7 +156,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     id: "drag",
     header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.user_internal_id} />,
+    cell: ({ row }) => <DragHandle id={row.original.matricule} />,
   },
   {
     id: "select",
@@ -179,7 +178,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
         />
       </div>
     ),
-    enableSorting: false,
+    enableSorting: true,
     enableHiding: false,
   },
   {
@@ -329,10 +328,15 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
                     role: "admin"
                   })
                 }}>setRank Admin</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive" onClick={async ()=> {
+                await authClient.admin.removeUser({
+                  userId: row.original.id
+                })
+                // await db.delete(dbschema.formations).where(eq(dbschema.formations.userId, row.original.matricule))
+              }}>Virer</DropdownMenuItem>
               </>
             )}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
