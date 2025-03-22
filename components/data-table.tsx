@@ -87,6 +87,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { authClient } from "@/lib/auth-client"
 import { Loader, Upload } from "lucide-react"
 import { toast } from "sonner"
+import { auth } from "@/lib/auth"
 // List of fake formations
 const FORMATIONS = [
   "Contrat signé",
@@ -114,7 +115,7 @@ const IconsPerGrade = {
   "Etat-Major": <IconShield className="fill-yellow-500 dark:fill-yellow-400" />,
   "Capitaine": <IconShield className="fill-blue-500 dark:fill-blue-400" />,
   "Lieutenant": <IconShield className="fill-green-500 dark:fill-green-400" />,
-  "Sergent Chef" : <></>,
+  "Sergent Chef": <></>,
   "Sergent": <></>,
   "GS-8 OSS": <></>,
   "GS-7": <></>,
@@ -215,22 +216,35 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
         )} */}
         {row.original.grade}
       </Badge>
-        ),
-      },
-      {
-        accessorKey: "formations",
-        header: "Formations",
-        cell: ({ row }) => {
+    ),
+  },
+  {
+    accessorKey: "formations",
+    header: "Formations",
+    cell: ({ row }) => {
       const userFormations = row.original.formations || [];
       const [canEditUser, setCanEditUser] = useState(false);
       const [selectedFormations, setSelectedFormations] = useState<string[]>(userFormations);
+      const [isAdmin, setIsAdmin] = useState(false);
 
       useEffect(() => {
         async function userPerms() {
           const canedit = await authClient.admin.hasPermission({
-        permission: {
-          project: ["assignformation", "removeformation"],
-        },
+            permission: {
+              admin: ["delete"]
+            }
+          });
+          setIsAdmin(canedit.data?.success ?? false);
+        }
+        userPerms();
+      }, []);
+
+      useEffect(() => {
+        async function userPerms() {
+          const canedit = await authClient.admin.hasPermission({
+            permission: {
+              project: ["assignformation", "removeformation"],
+            },
           });
           setCanEditUser(canedit.data?.success ?? false);
         }
@@ -241,7 +255,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
         try {
           await toggleFormation({ userId: row.original.matricule.toString(), formation, isChecked });
           setSelectedFormations((prev) =>
-        isChecked ? [...prev, formation] : prev.filter((f) => f !== formation)
+            isChecked ? [...prev, formation] : prev.filter((f) => f !== formation)
           );
           toast.success(isChecked ? `Formation ${formation} ajoutée` : `Formation ${formation} retirée`);
         } catch (error) {
@@ -252,46 +266,77 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
       return (
         <Select>
           <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder={selectedFormations.length} />
+            <SelectValue placeholder={selectedFormations.length} />
           </SelectTrigger>
           <SelectContent>
-        {FORMATIONS.map((formation) => (
-          <div key={formation} className="flex items-center space-x-2 p-2">
-            <Checkbox
-          id={`${row.original.id}-${formation}`}
-          checked={selectedFormations.includes(formation)}
-          onCheckedChange={(checked) => handleFormationToggle(formation, checked === true)}
-          disabled={!canEditUser}
-            />
-            <Label htmlFor={`${row.original.id}-${formation}`} className="flex-grow cursor-pointer">
-          {formation}
-            </Label>
-          </div>
-        ))}
+            {FORMATIONS.map((formation) => (
+              <div key={formation} className="flex items-center space-x-2 p-2">
+                <Checkbox
+                  id={`${row.original.id}-${formation}`}
+                  checked={selectedFormations.includes(formation)}
+                  onCheckedChange={(checked) => handleFormationToggle(formation, checked === true)}
+                  disabled={!canEditUser}
+                />
+                <Label htmlFor={`${row.original.id}-${formation}`} className="flex-grow cursor-pointer">
+                  {formation}
+                </Label>
+              </div>
+            ))}
           </SelectContent>
         </Select>
       );
-        },
-      },
-      {
-        id: "actions",
-        cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="data-[state=open]:bg-muted text-muted-foreground flex size-8" size="icon">
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Make a copy</DropdownMenuItem>
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    },
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const userFormations = row.original.formations || [];
+      const [isAdmin, setIsAdmin] = useState(false);
+
+      useEffect(() => {
+        async function userPerms() {
+          const canedit = await authClient.admin.hasPermission({
+            permission: {
+              user: ["set-role"]
+            }
+          });
+          setIsAdmin(canedit.data?.success ?? false);
+        }
+        userPerms();
+      }, []);
+
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="data-[state=open]:bg-muted text-muted-foreground flex size-8" size="icon">
+              <IconDotsVertical />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-32">
+            {isAdmin && (
+              <>
+                <DropdownMenuItem onClick={async () => {
+                  await authClient.admin.setRole({
+                    userId: row.original.id,
+                    role: "formateur"
+                  })
+                }}>setRank Formateur</DropdownMenuItem>
+                <DropdownMenuItem onClick={async () => {
+                  await authClient.admin.setRole({
+                    userId: row.original.id,
+                    role: "admin"
+                  })
+                }}>setRank Admin</DropdownMenuItem>
+              </>
+            )}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
   },
 ]
 
@@ -323,7 +368,7 @@ export function DataTable({
 }: {
   data: z.infer<typeof schema>[]
 }) {
-  
+
   const [data, setData] = React.useState(() => initialData || [])
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
@@ -392,8 +437,8 @@ export function DataTable({
           </SelectContent>
         </Select>
         {/* <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex"> */}
-          {/* <TabsTrigger value="outline">Outline</TabsTrigger> */}
-          {/* <TabsTrigger value="past-performance">
+        {/* <TabsTrigger value="outline">Outline</TabsTrigger> */}
+        {/* <TabsTrigger value="past-performance">
             Past Performance <Badge variant="secondary">3</Badge>
           </TabsTrigger>
           <TabsTrigger value="key-personnel">
