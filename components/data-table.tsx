@@ -111,7 +111,7 @@ const FORMATIONS = [
 
 const IconsPerGrade = {
   "Direction": <IconCrown className="fill-yellow-500 dark:fill-yellow-400" />,
-  "Administration": <IconStarFilled className="fill-yellow-500 dark:fill-yellow-400" />,
+  "Administrateur": <IconStarFilled className="fill-yellow-500 dark:fill-yellow-400" />,
   "Etat-Major": <IconShield className="fill-yellow-500 dark:fill-yellow-400" />,
   "Capitaine": <IconShield className="fill-blue-500 dark:fill-blue-400" />,
   "Lieutenant": <IconShield className="fill-green-500 dark:fill-green-400" />,

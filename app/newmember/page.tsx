@@ -1,11 +1,29 @@
+"use client";
 import { RegisterForm } from "@/components/registerForm"
+import { authClient } from "@/lib/auth-client"
+import { toast } from "sonner";
+import { useState, useEffect } from "react";
+export default function newMember() {
 
-export default function newMember(){
-    return (
-        <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-background p-6 md:p-10">
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    async function userPerms() {
+      const canedit = await authClient.admin.hasPermission({
+        permission: {
+          project: ["newmember"],
+        }
+      });
+      setIsAdmin(canedit.data?.success ?? false);
+    }
+    userPerms();
+  }, []);
+  return (
+    <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-background p-6 md:p-10">
       <div className="w-full max-w-sm">
-        <RegisterForm />
+        {isAdmin ? <RegisterForm /> : <div>Vous n'avez pas la permission d'accéder à cette page</div>}
+        {/* <RegisterForm /> */}
       </div>
     </div>
-      )
+  )
 }

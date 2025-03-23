@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectTrigger, SelectValue, SelectItem } from "@/components/ui/select"
 import { authClient } from "@/lib/auth-client";
 import { sendDiscordMessage } from "@/server/logger";
+import { toast } from "sonner";
 
 const securityRanks = [
   "GS-5",
@@ -31,6 +32,17 @@ const fieldLabels = [
   "Matricule"
 ]
 
+function generateRandomPassword(length: number = 10): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+  let password = '';
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * chars.length);
+    password += chars[randomIndex];
+  }
+
+  return password;
+}
 
 export function RegisterForm({
   className,
@@ -61,11 +73,11 @@ export function RegisterForm({
     
     // Log the form data entries to see what's being submitted
     console.log(Object.fromEntries(formData.entries()));
-    
-    const newUser = await authClient.admin.createUser({
+    const password = generateRandomPassword(10);
+    await authClient.admin.createUser({
       name: formData.get("prenom_et_nom") as string,
       email: formData.get("email") as string,
-      password: formData.get("prenom_et_nom") as string,
+      password: password,
       role: "user",
       // pole: branch,
       data: {
@@ -77,12 +89,24 @@ export function RegisterForm({
         matricule: formData.get("matricule") as string,
         globalid: formData.get("matricule") ? Number(formData.get("matricule")) : null,
       },
-    })
+    }).then(async (newUser) => {
+      if (!newUser.error){
+        toast("Compte créé avec succès")
+      } else {
+        toast("Erreur lors de la création du compte (" + newUser.error.message+")")
+        return
+      }
+      console.log(newUser)
 
-    console.log(newUser)
-    setNewAccData(newUser)
-    await sendDiscordMessage("New acc created: " + JSON.stringify(newUser)+ " by "+session?.user?.name+" ("+session?.user?.email+")")
+      setNewAccData(newUser)
+      await sendDiscordMessage("New acc created: " + JSON.stringify(newUser)+ " by "+session?.user?.name+" ("+session?.user?.email+")")
+      await sendDiscordMessage("Le compte de **"+ newUser.data.user.name + "** a été créé avec succès. \n__Voici ses informations de connexion:__ \nEmail: `"+newUser.data.user.email+"`\nMot de passe: `"+password+"`.\nIl fait parti du pôle "+ branch +" et a le rang "+ formData.get("job") +".")
+    }).catch((error) => {
+      console.log("erreur")
+      toast("Une erreur s'est produite" + error)
+    });
 
+    
   }
 
   return (
