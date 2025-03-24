@@ -78,6 +78,6 @@ export async function fetchUserProfilesWithFormations() {
     }));
     const users = sortByPriority(safeUserProfiles, grade_grid, "grade")
 
-    return safeUserProfiles;
+    return users;
   }
   
