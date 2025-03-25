@@ -19,26 +19,10 @@ const formations = [
       "https://docs.google.com/spreadsheets/d/e/2PACX-1vQdNWRAIs0HTkCKxKSavQLJxmijQiOQZ8XXoTGijpHYjJFRAUXZoUCOPSp7Dfe5ZH-lUGW34-6Q_N2Y/pubhtml?widget=true&amp;headers=false",
   },
   {
-    id: "4-3-3",
+    id: "Examen Final",
     name: "4-3-3",
     docUrl:
-      "https://docs.google.com/document/d/e/2PACX-1vT8YGBXIxZ_MUvQ9Tv1WMDoxYEwPYHLKEGQlYYp_UP1UYR9DNyLTKMd/pub?embedded=true",
-  },
-  {
-    id: "3-5-2",
-    name: "3-5-2",
-    docUrl:
-      "https://docs.google.com/document/d/e/2PACX-1vRnPxKB8xMCpOQrWyk5iDNcSo4HXmBZGl1Tz90xM_dkxWA5dQvR/pub?embedded=true",
-  },
-  {
-    id: "5-3-2",
-    name: "5-3-2",
-    docUrl: "https://docs.google.com/document/d/e/2PACX-1vSQlJ9RkEi_AZrLJJfGNs1L8vQg9Tn9MgMxZQ_Cq4Yk/pub?embedded=true",
-  },
-  {
-    id: "4-2-3-1",
-    name: "4-2-3-1",
-    docUrl: "https://docs.google.com/document/d/e/2PACX-1vTQZxK6YDwZ9xLuZ8oVs_cHdZUJ7UmZL5Tz/pub?embedded=true",
+      "https://docs.google.com/document/d/e/2PACX-1vRsZ67VrnVNt10wvl172bdT9jMSmcm0puL9FGIFVZ1Lp00fbhog1dwHV7Wzg57SXPXlx9KixTm4dyyA/pub?embedded=true",
   },
 ]
 
