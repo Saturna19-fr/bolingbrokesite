@@ -1,9 +1,7 @@
 'use server';
 import { db } from "@/db/drizzle";
 import { schema } from "@/db/schema";
-export async function create() {
-
-    const userProfiles = await db.select({id: schema.user.id, name: schema.user.name, matricule: schema.user.globalid, grade: schema.user.job, user_internal_id: schema.user.id, pole: schema.user.pole}).from(schema.user)
-    console.log(userProfiles)
-    return userProfiles
+import { eq } from "drizzle-orm";
+export async function edit_grade(matricule: number, pole: string, job: string) {
+    const dbu = await db.update(schema.user).set({job: job, pole: pole}).where(eq(schema.user.globalid, matricule));
 }

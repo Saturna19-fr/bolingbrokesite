@@ -20,7 +20,7 @@ import { fetchUserProfilesWithFormations } from "@/server/userProfile"
 export default async function Page() {
   const safeUserProfiles = await fetchUserProfilesWithFormations();
   // console.log(userProfilesWithFormations);
-  console.log(safeUserProfiles);
+  // console.log(safeUserProfiles);
   return (
     
         <div className="flex flex-1 flex-col">

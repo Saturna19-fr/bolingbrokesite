@@ -55,7 +55,8 @@ export async function fetchUserProfilesWithFormations() {
       matricule: schema.user.globalid,
       grade: schema.user.job,
       user_internal_id: schema.user.id,
-      pole: schema.user.pole
+      pole: schema.user.pole,
+      role: schema.user.role,
     }).from(schema.user);
   
     const userProfilesWithFormations = await Promise.all(
@@ -75,6 +76,7 @@ export async function fetchUserProfilesWithFormations() {
       id: user.id ?? '',
       grade: user.grade ?? '',
       pole: user.pole ?? '',
+      role: user.role ?? '',
     }));
     const users = sortByPriority(safeUserProfiles, grade_grid, "grade")
 

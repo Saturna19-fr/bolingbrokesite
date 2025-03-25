@@ -72,7 +72,6 @@ export function RegisterForm({
     const formData = new FormData(form);
     
     // Log the form data entries to see what's being submitted
-    console.log(Object.fromEntries(formData.entries()));
     const password = generateRandomPassword(10);
     await authClient.admin.createUser({
       name: formData.get("prenom_et_nom") as string,
@@ -102,7 +101,6 @@ export function RegisterForm({
       await sendDiscordMessage("New acc created: " + JSON.stringify(newUser)+ " by "+session?.user?.name+" ("+session?.user?.email+")")
       await sendDiscordMessage("Le compte de **"+ newUser.data.user.name + "** a été créé avec succès. \n__Voici ses informations de connexion:__ \nEmail: `"+newUser.data.user.email+"`\nMot de passe: `"+password+"`.\nIl fait parti du pôle "+ branch +" et a le rang "+ formData.get("job") +".")
     }).catch((error) => {
-      console.log("erreur")
       toast("Une erreur s'est produite" + error)
     });
 

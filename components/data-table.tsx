@@ -2,6 +2,15 @@
 
 import * as React from "react"
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
   DndContext,
   KeyboardSensor,
   MouseSensor,
@@ -21,18 +30,12 @@ import {
   IconChevronRight,
   IconChevronsLeft,
   IconChevronsRight,
-  IconCircleCheckFilled,
   IconCrown,
   IconDotsVertical,
   IconGripVertical,
   IconLayoutColumns,
-  IconLoader,
-  IconPlus,
   IconShield,
-  IconShieldBolt,
-  IconShieldCode,
   IconStarFilled,
-  IconTrendingUp,
 } from "@tabler/icons-react"
 import {
   type ColumnDef,
@@ -49,7 +52,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 import { z } from "zod"
 
 import { useEffect, useState } from 'react'
@@ -57,15 +59,13 @@ import { useEffect, useState } from 'react'
 import { useIsMobile } from "@/hooks/use-mobile"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { type ChartConfig} from "@/components/ui/chart"
 import { Checkbox } from "@/components/ui/checkbox"
 import { toggleFormation } from "@/server/toggleFormation"
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
@@ -75,18 +75,35 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { authClient } from "@/lib/auth-client"
-import { Loader, Upload } from "lucide-react"
+import { Loader } from "lucide-react"
 import { toast } from "sonner"
+import { edit_grade } from "@/server/data"
+
+const securityRanks = [
+  "GS-5",
+  "GS-6",
+  "GS-7",
+  "Sergent",
+  "Sergent Chef",
+  "GS-8 OSS",
+  "Lieutenant",
+  "Capitaine",
+  "Etat-Major",
+  "Administrateur",
+  "Direction",
+]
+const medicalRanks = ["Médecin Recrue", "Médecin", "Médecin Expérimenté", "Médecin Chef-Adjoint", "Médecin Chef"]
+const pole = ["Sécuritaire", "Médical"]
 
 // List of fake formations
 const FORMATIONS = [
@@ -130,6 +147,7 @@ export const schema = z.object({
   matricule: z.number(),
   grade: z.string(),
   formations: z.array(z.string()),
+  role: z.string()
 })
 
 // Create a separate component for the drag handle
@@ -291,7 +309,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     cell: ({ row }) => {
       const userFormations = row.original.formations || [];
       const [isAdmin, setIsAdmin] = useState(false);
-
+      const [branch, setBranch] = useState(row.original.pole);
       useEffect(() => {
         async function userPerms() {
           const canedit = await authClient.admin.hasPermission({
@@ -304,7 +322,14 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
         userPerms();
       }, []);
 
-
+      const getRanksForBranch = () => {
+        if (branch === "Sécuritaire") {
+          return securityRanks
+        } else if (branch === "Médical") {
+          return medicalRanks
+        }
+        return []
+      }
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -316,6 +341,96 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
           <DropdownMenuContent align="end" className="w-32">
             {isAdmin && (
               <>
+
+                <DropdownMenuLabel>Rank: {row.original.role}</DropdownMenuLabel>
+                <Dialog>
+
+                  <DialogTrigger asChild>
+                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>Changer de grade</DropdownMenuItem>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]" >
+                    <DialogHeader>
+                      <DialogTitle>Changement de grade</DialogTitle>
+                      <DialogDescription>
+                        Vous pouvez changer le grade de {row.original.name} ({row.original.matricule}).
+                      </DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={async (e) => {
+                      e.preventDefault();
+                      const formData = new FormData(e.currentTarget);
+                      const pole = branch
+                      const job = formData.get("job") as string
+                      await edit_grade(row.original.matricule, pole, job)
+                      // await authClient.changePassword({ currentPassword: cpassword, newPassword: password, revokeOtherSessions: true })
+                      toast("Grade changé avec succès")
+
+                    }}>
+                      <div className="grid gap-4 py-4">
+                        <div className="grid  items-center gap-2">
+                          <Label htmlFor="email" className="text-right">
+                            Nom complet
+                          </Label>
+                          <Input
+                            id="email"
+                            name="email"
+                            defaultValue={row.original.name}
+                            className="col-span-3"
+                            disabled
+                          />
+                        </div>
+                        <div className="grid  items-center gap-2">
+                          <Label htmlFor="currentGrade" className="text-right">
+                            Grade actuel
+                          </Label>
+                          <Input
+                            id="currentGrade"
+                            name="currentGrade"
+                            defaultValue={row.original.grade}
+                            disabled
+                            className="col-span-3"
+                          />
+                        </div>
+                        <div className="grid gap-2">
+                                      <Label htmlFor="branch">Branch</Label>
+                                      <Select value={branch} onValueChange={setBranch} name="branch" required>
+                                        <SelectTrigger id="branch">
+                                          <SelectValue placeholder="Select branch" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          {pole.map((p) => (
+                                            <SelectItem key={p} value={p}>
+                                              {p}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
+                                    </div>
+                        
+                                    {branch && (
+                                      <div className="grid gap-2">
+                                        <Label htmlFor="job">Job</Label>
+                                        <Select name="job" required>
+                                          <SelectTrigger id="job">
+                                            <SelectValue placeholder="Select job" />
+                                          </SelectTrigger>
+                                          <SelectContent>
+                                          {getRanksForBranch().map((rank) => (
+                                              <SelectItem key={rank} value={rank}>
+                                                {rank}
+                                              </SelectItem>
+                                            ))}
+                                          </SelectContent>
+                                        </Select>
+                                      </div>
+                                    )}
+                      </div>
+                      <DialogFooter>
+                        <Button type="submit">Save changes</Button>
+                      </DialogFooter>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+
                 <DropdownMenuItem onClick={async () => {
                   await authClient.admin.setRole({
                     userId: row.original.id,
@@ -328,15 +443,16 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
                     role: "admin"
                   })
                 }}>setRank Admin</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem variant="destructive" onClick={async ()=> {
-                await authClient.admin.removeUser({
-                  userId: row.original.id
-                })
-                // await db.delete(dbschema.formations).where(eq(dbschema.formations.userId, row.original.matricule))
-              }}>Virer</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem variant="destructive" onClick={async () => {
+                  await authClient.admin.removeUser({
+                    userId: row.original.id
+                  })
+                  // await db.delete(dbschema.formations).where(eq(dbschema.formations.userId, row.original.matricule))
+                }}>Virer</DropdownMenuItem>
               </>
             )}
+            {!isAdmin && (<DropdownMenuLabel>Aucune action disponible.</DropdownMenuLabel>)}
           </DropdownMenuContent>
         </DropdownMenu>
       );
